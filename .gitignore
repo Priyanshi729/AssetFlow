@@ -1,0 +1,19 @@
+# Environment
+.env
+
+# IDE
+.idea/
+.vscode/
+
+# Go
+bin/
+vendor/
+
+# Logs
+*.log
+
+# Docker/PostgreSQL data
+pgdata/
+
+# OS
+.DS_Store
