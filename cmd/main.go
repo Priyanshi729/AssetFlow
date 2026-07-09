@@ -1,7 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"AssetFlow/database"
+	"fmt"
+	"net/http"
+)
 
 func main() {
-	fmt.Println("Hello World")
+	database.ConnectDB()
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "Asset Flow is running")
+	})
+	fmt.Println("Server running on :8080")
+	http.ListenAndServe(":8080", nil)
 }
