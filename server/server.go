@@ -17,8 +17,12 @@ const (
 )
 
 func (svc *Server) Run(port string) error {
+
+	mux := SetupRoutes()
+
 	svc.server = &http.Server{
 		Addr:              port,
+		Handler:           mux,
 		ReadTimeout:       readTimeout,
 		ReadHeaderTimeout: readHeaderTimeout,
 		WriteTimeout:      writeTimeout,
