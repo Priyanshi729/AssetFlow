@@ -1,6 +1,7 @@
 package server
 
 import (
+	"AssetFlow/handler"
 	"context"
 	"net/http"
 	"time"
@@ -16,13 +17,19 @@ const (
 	writeTimeout      = 5 * time.Second
 )
 
-func (svc *Server) Run(port string) error {
+func setupRoutes() *http.ServeMux {
+	mux := http.NewServeMux()
 
-	mux := SetupRoutes()
+	mux.HandleFunc("POST /register", handler.RegisterUser)
+
+	return mux
+}
+
+func (svc *Server) Run(port string) error {
 
 	svc.server = &http.Server{
 		Addr:              port,
-		Handler:           mux,
+		Handler:           setupRoutes(),
 		ReadTimeout:       readTimeout,
 		ReadHeaderTimeout: readHeaderTimeout,
 		WriteTimeout:      writeTimeout,
