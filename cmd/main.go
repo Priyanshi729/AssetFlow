@@ -2,16 +2,31 @@ package main
 
 import (
 	"AssetFlow/database"
-	"fmt"
+	"log"
 	"net/http"
 )
 
 func main() {
-	database.ConnectDB()
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Asset Flow is running")
-	})
-	fmt.Println("Server running on :8080")
-	http.ListenAndServe(":8080", nil)
+	if err := database.ConnectDB(); err != nil {
+		log.Fatal(err)
+	}
+
+	// Close DB when server stops
+	defer database.CloseDB()
+
+	// Register routes
+	http.HandleFunc("/", HomeHandler)
+
+	log.Println("Server started on :8080")
+
+	// Start server
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("AssetFlow Server Running"))
 }

@@ -1,31 +1,66 @@
 package database
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
 
+	"github.com/golang-migrate/migrate/v4"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 var DB *sqlx.DB
 
-func ConnectDB() {
+func ConnectDB() error {
+	var err error
+
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_PASS"),
 		os.Getenv("DB_NAME"),
 	)
 
-	var err error
 	DB, err = sqlx.Connect("postgres", dsn)
+
 	if err != nil {
-		log.Fatal(err)
+		return err
+	}
+	log.Println("Connected to DB")
+
+	return migrateUp(DB)
+
+}
+
+func migrateUp(db *sqlx.DB) error {
+	driver, driErr := postgres.WithInstance(db.DB, &postgres.Config{})
+
+	if driErr != nil {
+		return driErr
+	}
+	m, migErr := migrate.NewWithDatabaseInstance("file://database/migrations", "postgres", driver)
+
+	if migErr != nil {
+		return migErr
 	}
 
-	fmt.Println("Connected to PostgreSQL")
+	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		return err
+	}
+
+	return nil
+}
+
+func CloseDB() error {
+	if DB != nil {
+		return DB.Close()
+	}
+	return nil
 }
