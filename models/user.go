@@ -9,15 +9,21 @@ type RegisterUser struct {
 	PhoneNumber string `json:"phoneNumber" db:"phone_number" validate:"required,len=10"`
 }
 
-type LoginUser struct {
+type LoginRequest struct {
 	Email    string `json:"email" db:"email" validate:"required,email"`
 	Password string `json:"password" db:"password" validate:"required,min=6"`
+}
+
+type LoginResponse struct {
+	UserID       string `db:"user_id"`
+	PasswordHash string `db:"password"`
 }
 
 type User struct {
 	UserID      string `json:"id" db:"user_id"`
 	Name        string `json:"name" db:"name"`
 	Email       string `json:"email" db:"email"`
+	Password    string `json:"password" db:"password"`
 	PhoneNumber string `json:"phoneNumber" db:"phone_number"`
 	Role        string `json:"role" db:"role"`
 	UserType    string `json:"usertype" db:"user_type"`

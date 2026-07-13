@@ -1,6 +1,10 @@
 package repository
 
-import "AssetFlow/database"
+import (
+	"AssetFlow/database"
+	"AssetFlow/models"
+	"AssetFlow/utils"
+)
 
 func IsUserExists(email string) (bool, error) {
 	var exists bool
@@ -34,4 +38,27 @@ func CreateUser(name, email, password, phoneNo, role, userType string) (string, 
 	}
 
 	return userID, nil
+}
+
+func GetUserIDByPassword(email, password string) (string, error) {
+
+	query := `
+		SELECT
+			user_id,password
+		FROM users
+		WHERE email = TRIM($1)
+		  AND archived_at IS NULL
+	`
+
+	var user models.LoginResponse
+
+	if err := database.DB.Get(&user, query, email); err != nil {
+		return "", err
+	}
+
+	if err := utils.CheckPassword(password, user.PasswordHash); err != nil {
+		return "", err
+	}
+
+	return user.UserID, nil
 }
