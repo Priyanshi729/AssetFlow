@@ -25,14 +25,15 @@ const (
 
 func setupPublicRoutes(mux *http.ServeMux) {
 
-	mux.HandleFunc("POST /register", handler.RegisterUser)
-	mux.HandleFunc("POST /login", handler.LoginUser)
+	mux.HandleFunc("POST /v1/register", handler.RegisterUser)
+	mux.HandleFunc("POST /v1/login", handler.LoginUser)
 
 }
 
 func setupPrivateRoutes(mux *http.ServeMux) {
-	mux.Handle("GET /me", protected(handler.GetUser))
-	mux.Handle("DELETE /", protected(handler.DeleteUser))
+	mux.Handle("GET /v1/user/me", protected(handler.GetUser))
+	mux.Handle("POST /v1/user/logout", protected(handler.LogoutUser))
+	mux.Handle("DELETE /v1/user/", protected(handler.DeleteUser))
 }
 
 func SetupRoutes() *Server {
