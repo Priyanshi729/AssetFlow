@@ -2,6 +2,7 @@ package server
 
 import (
 	"AssetFlow/handler"
+	"AssetFlow/middleware"
 	"context"
 	"net/http"
 	"time"
@@ -9,6 +10,11 @@ import (
 
 type Server struct {
 	server *http.Server
+	router http.Handler
+}
+
+func protected(h http.HandlerFunc) http.Handler {
+	return middleware.Authenticate(h)
 }
 
 const (
@@ -17,20 +23,32 @@ const (
 	writeTimeout      = 5 * time.Second
 )
 
-func setupRoutes() *http.ServeMux {
-	mux := http.NewServeMux()
+func setupPublicRoutes(mux *http.ServeMux) {
 
 	mux.HandleFunc("POST /register", handler.RegisterUser)
 	mux.HandleFunc("POST /login", handler.LoginUser)
 
-	return mux
+}
+
+func setupPrivateRoutes(mux *http.ServeMux) {
+	mux.Handle("GET /me", protected(handler.GetUser))
+}
+
+func SetupRoutes() *Server {
+	mux := http.NewServeMux()
+	setupPublicRoutes(mux)
+	setupPrivateRoutes(mux)
+
+	return &Server{
+		router: mux,
+	}
 }
 
 func (svc *Server) Run(port string) error {
 
 	svc.server = &http.Server{
 		Addr:              port,
-		Handler:           setupRoutes(),
+		Handler:           svc.router,
 		ReadTimeout:       readTimeout,
 		ReadHeaderTimeout: readHeaderTimeout,
 		WriteTimeout:      writeTimeout,

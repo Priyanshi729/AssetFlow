@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"AssetFlow/middleware"
 	"AssetFlow/models"
 	"AssetFlow/service"
 	"AssetFlow/utils"
@@ -44,7 +45,7 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		utils.RespondError(w, statusCode, err, "failed to login")
 		return
 	}
-	
+
 	utils.RespondJSON(w, http.StatusOK, struct {
 		Message string `json:"message"`
 		Token   string `json:"token"`
@@ -52,4 +53,23 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		Message: "User login successfully",
 		Token:   token,
 	})
+}
+
+func GetUser(w http.ResponseWriter, r *http.Request) {
+
+	userCtx := middleware.UserContext(r)
+	if userCtx == nil {
+		utils.RespondError(w, http.StatusUnauthorized, nil, "unauthorized")
+		return
+	}
+
+	userID := userCtx.UserID
+
+	user, err := service.GetUser(userID)
+	if err != nil {
+		utils.RespondError(w, http.StatusInternalServerError, err, "failed to get user")
+		return
+	}
+
+	utils.RespondJSON(w, http.StatusOK, user)
 }

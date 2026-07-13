@@ -62,3 +62,22 @@ func GetUserIDByPassword(email, password string) (string, error) {
 
 	return user.UserID, nil
 }
+
+func GetUser(userID string) (*models.User, error) {
+
+	query := `
+		SELECT
+			user_id,name,email,phone_no,role,user_type
+		FROM users
+		WHERE user_id = $1
+		  AND archived_at IS NULL
+	`
+
+	var user models.User
+
+	if err := database.DB.Get(&user, query, userID); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}

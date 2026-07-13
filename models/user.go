@@ -23,8 +23,7 @@ type User struct {
 	UserID      string `json:"id" db:"user_id"`
 	Name        string `json:"name" db:"name"`
 	Email       string `json:"email" db:"email"`
-	Password    string `json:"password" db:"password"`
-	PhoneNumber string `json:"phoneNumber" db:"phone_number"`
+	PhoneNumber string `json:"phoneNumber" db:"phone_no"`
 	Role        string `json:"role" db:"role"`
 	UserType    string `json:"usertype" db:"user_type"`
 }

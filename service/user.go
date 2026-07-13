@@ -61,3 +61,7 @@ func LoginUser(user models.LoginRequest) (string, int, error) {
 	return token, http.StatusOK, nil
 
 }
+
+func GetUser(userID string) (*models.User, error) {
+	return repository.GetUser(userID)
+}
