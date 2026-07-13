@@ -5,7 +5,7 @@ type RegisterUser struct {
 	Email       string `json:"email" db:"email" validate:"required,email"`
 	Password    string `json:"password" db:"password" validate:"required,min=6"`
 	Role        string `json:"role" db:"role" validate:"required,oneof=admin employee project_manager"`
-	Type        string `json:"usertype" db:"type" validate:"required,oneof=full-time intern freelancer"`
+	UserType    string `json:"usertype" db:"user_type" validate:"required,oneof=full-time intern freelancer"`
 	PhoneNumber string `json:"phoneNumber" db:"phone_number" validate:"required,len=10"`
 }
 
@@ -15,10 +15,10 @@ type LoginUser struct {
 }
 
 type User struct {
-	ID          string `json:"id" db:"id"`
+	UserID      string `json:"id" db:"user_id"`
 	Name        string `json:"name" db:"name"`
 	Email       string `json:"email" db:"email"`
 	PhoneNumber string `json:"phoneNumber" db:"phone_number"`
 	Role        string `json:"role" db:"role"`
-	Employment  string `json:"employment" db:"employment"`
+	UserType    string `json:"usertype" db:"user_type"`
 }

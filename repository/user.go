@@ -1,4 +1,4 @@
-package dbhelper
+package repository
 
 import "AssetFlow/database"
 
@@ -19,35 +19,17 @@ func IsUserExists(email string) (bool, error) {
 	return exists, nil
 }
 
-func CreateUser(name, email, phoneNo, role, userType, password string) (string, error) {
+func CreateUser(name, email, password, phoneNo, role, userType string) (string, error) {
 	var userID string
 
 	query := `
 		INSERT INTO users (
-			name,email,phone_no,role,user_type,password
-		)
-		VALUES (
-			TRIM($1),
-			TRIM($2),
-			TRIM($3),
-			$4,
-			$5,
-			$6
-		)
+			name,email,password,phone_no,role,user_type
+		)VALUES (TRIM($1),TRIM($2),TRIM($3),$4,$5,$6)
 		RETURNING user_id;
 	`
 
-	err := database.DB.QueryRow(
-		query,
-		name,
-		email,
-		phoneNo,
-		role,
-		userType,
-		password,
-	).Scan(&userID)
-
-	if err != nil {
+	if err := database.DB.QueryRow(query, name, email, password, phoneNo, role, userType).Scan(&userID); err != nil {
 		return "", err
 	}
 
