@@ -72,7 +72,6 @@ func GetUser(userID string) (*models.User, error) {
 		WHERE user_id = $1
 		  AND archived_at IS NULL
 	`
-
 	var user models.User
 
 	if err := database.DB.Get(&user, query, userID); err != nil {
@@ -80,4 +79,18 @@ func GetUser(userID string) (*models.User, error) {
 	}
 
 	return &user, nil
+}
+
+func DeleteUser(userID string) error {
+
+	query := `
+		UPDATE users
+		SET
+			archived_at = NOW()
+		WHERE user_id = $1
+		  AND archived_at IS NULL
+	`
+
+	_, err := database.DB.Exec(query, userID)
+	return err
 }

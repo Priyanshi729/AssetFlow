@@ -32,6 +32,7 @@ func setupPublicRoutes(mux *http.ServeMux) {
 
 func setupPrivateRoutes(mux *http.ServeMux) {
 	mux.Handle("GET /me", protected(handler.GetUser))
+	mux.Handle("DELETE /", protected(handler.DeleteUser))
 }
 
 func SetupRoutes() *Server {

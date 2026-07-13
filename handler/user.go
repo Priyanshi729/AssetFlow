@@ -73,3 +73,24 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	utils.RespondJSON(w, http.StatusOK, user)
 }
+
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+
+	userCtx := middleware.UserContext(r)
+	if userCtx == nil {
+		utils.RespondError(w, http.StatusUnauthorized, nil, "unauthorized")
+		return
+	}
+
+	statusCode, err := service.DeleteUser(userCtx.UserID)
+	if err != nil {
+		utils.RespondError(w, statusCode, err, "failed to delete user")
+		return
+	}
+
+	utils.RespondJSON(w, http.StatusOK, struct {
+		Message string `json:"message"`
+	}{
+		Message: "user deleted successfully",
+	})
+}

@@ -65,3 +65,12 @@ func LoginUser(user models.LoginRequest) (string, int, error) {
 func GetUser(userID string) (*models.User, error) {
 	return repository.GetUser(userID)
 }
+
+func DeleteUser(userID string) (int, error) {
+
+	if err := repository.DeleteUser(userID); err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	return http.StatusOK, nil
+}
