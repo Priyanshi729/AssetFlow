@@ -21,7 +21,21 @@ func AssignAsset(assetID string, body models.AssignAssetRequest) (int, error) {
 		return http.StatusInternalServerError, err
 	}
 
-	err = repository.UpdateAssetStatus(assetID)
+	err = repository.UpdateAssetStatus(assetID, "assigned")
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	return http.StatusOK, nil
+}
+
+func ReturnAsset(assetID string) (int, error) {
+	err := repository.ReturnAsset(assetID)
+	if err != nil {
+		return http.StatusBadRequest, err
+	}
+
+	err = repository.UpdateAssetStatus(assetID, "available")
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}

@@ -30,3 +30,19 @@ func AssignAsset(w http.ResponseWriter, r *http.Request) {
 		Message: "Asset assigned successfully",
 	})
 }
+
+func ReturnAsset(w http.ResponseWriter, r *http.Request) {
+	assetID := r.PathValue("assetID")
+
+	statusCode, err := service.ReturnAsset(assetID)
+	if err != nil {
+		utils.RespondError(w, statusCode, err, "failed to return asset")
+		return
+	}
+
+	utils.RespondJSON(w, http.StatusOK, struct {
+		Message string `json:"message"`
+	}{
+		Message: "Asset returned successfully",
+	})
+}
