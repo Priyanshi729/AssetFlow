@@ -17,6 +17,7 @@ type LoginRequest struct {
 type LoginResponse struct {
 	UserID       string `db:"user_id"`
 	PasswordHash string `db:"password"`
+	Role         string `db:"role"`
 }
 
 type User struct {

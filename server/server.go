@@ -13,8 +13,10 @@ type Server struct {
 	router http.Handler
 }
 
-func protected(h http.HandlerFunc) http.Handler {
-	return middleware.Authenticate(h)
+func protectedWithRoles(h http.HandlerFunc, roles ...string) http.Handler {
+	return middleware.Authenticate(
+		middleware.RequireRoles(roles...)(h),
+	)
 }
 
 const (
@@ -31,9 +33,12 @@ func setupPublicRoutes(mux *http.ServeMux) {
 }
 
 func setupPrivateRoutes(mux *http.ServeMux) {
-	mux.Handle("GET /v1/user/me", protected(handler.GetUser))
-	mux.Handle("POST /v1/user/logout", protected(handler.LogoutUser))
-	mux.Handle("DELETE /v1/user/", protected(handler.DeleteUser))
+	mux.Handle("GET /v1/user/me", protectedWithRoles(handler.GetUser, "admin", "project-manager", "employee"))
+	mux.Handle("POST /v1/user/logout", protectedWithRoles(handler.LogoutUser, "admin", "project-manager", "employee"))
+
+	mux.Handle("DELETE /v1/user/{userID}", protectedWithRoles(handler.DeleteUser, "admin", "project-manager", "employee"))
+
+	mux.Handle("POST /v1/assets", protectedWithRoles(handler.CreateAsset, "admin", "project-manager"))
 }
 
 func SetupRoutes() *Server {

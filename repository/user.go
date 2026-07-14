@@ -40,27 +40,26 @@ func CreateUser(name, email, password, phoneNo, role, userType string) (string, 
 	return userID, nil
 }
 
-func GetUserIDByPassword(email, password string) (string, error) {
+func GetUserByPassword(email, password string) (models.LoginResponse, error) {
 
 	query := `
 		SELECT
-			user_id,password
+			user_id,password,role
 		FROM users
 		WHERE email = TRIM($1)
 		  AND archived_at IS NULL
 	`
-
 	var user models.LoginResponse
 
 	if err := database.DB.Get(&user, query, email); err != nil {
-		return "", err
+		return models.LoginResponse{}, err
 	}
 
 	if err := utils.CheckPassword(password, user.PasswordHash); err != nil {
-		return "", err
+		return models.LoginResponse{}, err
 	}
 
-	return user.UserID, nil
+	return user, nil
 }
 
 func GetUser(userID string) (*models.User, error) {

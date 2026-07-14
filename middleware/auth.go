@@ -48,6 +48,7 @@ func Authenticate(next http.Handler) http.Handler {
 
 		user := &models.User{
 			UserID: claims["userId"].(string),
+			Role:   claims["role"].(string),
 		}
 
 		ctx := context.WithValue(r.Context(), userContext, user)
@@ -61,4 +62,27 @@ func UserContext(r *http.Request) *models.User {
 		return user
 	}
 	return nil
+}
+
+func RequireRoles(roles ...string) func(http.Handler) http.Handler {
+
+	return func(next http.Handler) http.Handler {
+
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+			user := UserContext(r)
+			if user == nil {
+				utils.RespondError(w, http.StatusUnauthorized, nil, "unauthorized")
+				return
+			}
+
+			for _, role := range roles {
+				if user.Role == role {
+					next.ServeHTTP(w, r)
+					return
+				}
+			}
+			utils.RespondError(w, http.StatusForbidden, nil, "access denied")
+		})
+	}
 }

@@ -34,7 +34,7 @@ func RegisterUser(user models.RegisterUser) (string, int, error) {
 		return "", http.StatusInternalServerError, userErr
 	}
 
-	token, tokenerr := utils.GenerateJWT(userID)
+	token, tokenerr := utils.GenerateJWT(userID, user.Role)
 	if tokenerr != nil {
 		return "", http.StatusInternalServerError, tokenerr
 	}
@@ -45,21 +45,23 @@ func RegisterUser(user models.RegisterUser) (string, int, error) {
 func LoginUser(user models.LoginRequest) (string, int, error) {
 
 	v := validator.New()
+
 	if err := v.Struct(user); err != nil {
 		return "", http.StatusBadRequest, err
 	}
 
-	userID, err := repository.GetUserIDByPassword(user.Email, user.Password)
+	loginData, err := repository.GetUserByPassword(user.Email, user.Password)
 	if err != nil {
 		return "", http.StatusUnauthorized, err
 	}
 
-	token, tokenerr := utils.GenerateJWT(userID)
-	if tokenerr != nil {
-		return "", http.StatusInternalServerError, tokenerr
-	}
-	return token, http.StatusOK, nil
+	token, err := utils.GenerateJWT(loginData.UserID, loginData.Role)
 
+	if err != nil {
+		return "", http.StatusInternalServerError, err
+	}
+
+	return token, http.StatusOK, nil
 }
 
 func GetUser(userID string) (*models.User, error) {
