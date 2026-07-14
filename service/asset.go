@@ -77,9 +77,7 @@ func GetAssetByID(assetID string) (*models.AssetDetails, int, error) {
 }
 
 func UpdateAsset(assetID string, body models.UpdateAssetRequest) (int, error) {
-
 	v := validator.New()
-
 	if err := v.Struct(body); err != nil {
 		return http.StatusBadRequest, err
 	}
@@ -90,7 +88,6 @@ func UpdateAsset(assetID string, body models.UpdateAssetRequest) (int, error) {
 	}
 
 	err = database.Tx(func(tx *sqlx.Tx) error {
-
 		if err := repository.UpdateAsset(tx, assetID, body.Brand, body.Model, body.SerialNumber, body.Status, body.OwnerType, body.WarrantyStart, body.WarrantyEnd); err != nil {
 			return err
 		}
@@ -120,6 +117,15 @@ func UpdateAsset(assetID string, body models.UpdateAssetRequest) (int, error) {
 
 	if err != nil {
 		return http.StatusInternalServerError, err
+	}
+
+	return http.StatusOK, nil
+}
+
+func DeleteAsset(assetID string) (int, error) {
+	err := repository.DeleteAsset(assetID)
+	if err != nil {
+		return http.StatusNotFound, err
 	}
 
 	return http.StatusOK, nil

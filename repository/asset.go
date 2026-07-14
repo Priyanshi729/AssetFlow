@@ -214,6 +214,24 @@ func UpdateMouse(db sqlx.Ext, assetID string, dpi int, connectivity string) erro
 	`
 
 	_, err := db.Exec(query, assetID, dpi, connectivity)
-	
+
 	return err
+}
+
+func DeleteAsset(assetID string) error {
+
+	query := `
+		UPDATE assets
+		SET
+			archived_at = CURRENT_TIMESTAMP
+		WHERE asset_id = $1
+		  AND archived_at IS NULL
+	`
+
+	_, err := database.DB.Exec(query, assetID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
