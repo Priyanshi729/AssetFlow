@@ -30,3 +30,14 @@ func CreateAsset(w http.ResponseWriter, r *http.Request) {
 		AssetID: assetID,
 	})
 }
+
+func GetAssets(w http.ResponseWriter, r *http.Request) {
+
+	assets, statusCode, err := service.GetAssets()
+	if err != nil {
+		utils.RespondError(w, statusCode, err, "failed to get assets")
+		return
+	}
+
+	utils.RespondJSON(w, http.StatusOK, assets)
+}

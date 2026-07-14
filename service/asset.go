@@ -55,3 +55,13 @@ func CreateAsset(asset models.CreateAssetRequest) (string, int, error) {
 
 	return assetID, http.StatusCreated, nil
 }
+
+func GetAssets() ([]models.Asset, int, error) {
+
+	assets, err := repository.GetAssets()
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+
+	return assets, http.StatusOK, nil
+}

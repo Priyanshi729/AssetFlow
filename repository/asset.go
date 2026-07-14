@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"AssetFlow/database"
+	"AssetFlow/models"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -67,4 +70,22 @@ func CreateMouse(db sqlx.Ext, assetID string, dpi int, connectivity string) erro
 	_, err := db.Exec(query, assetID, dpi, connectivity)
 
 	return err
+}
+
+func GetAssets() ([]models.Asset, error) {
+
+	query := `
+		SELECT
+			asset_id,brand,model,serial_number,asset_type,status,owner_type,warranty_start,warranty_end,created_at
+		FROM assets
+		WHERE archived_at IS NULL
+		ORDER BY created_at DESC
+	`
+	var assets []models.Asset
+
+	if err := database.DB.Select(&assets, query); err != nil {
+		return nil, err
+	}
+
+	return assets, nil
 }
