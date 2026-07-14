@@ -71,8 +71,10 @@ func UpdateAsset(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.RespondJSON(w, http.StatusOK, map[string]string{
-		"message": "Asset updated successfully",
+	utils.RespondJSON(w, http.StatusCreated, struct {
+		Message string `json:"message"`
+	}{
+		Message: "Updated asset successfully",
 	})
 }
 
@@ -85,7 +87,9 @@ func DeleteAsset(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.RespondJSON(w, http.StatusOK, map[string]string{
-		"message": "Asset deleted successfully",
+	utils.RespondJSON(w, http.StatusCreated, struct {
+		Message string `json:"message"`
+	}{
+		Message: "Asset deleted successfully",
 	})
 }

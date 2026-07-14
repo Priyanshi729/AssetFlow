@@ -55,13 +55,13 @@ type AssetDetails struct {
 }
 
 type UpdateAssetRequest struct {
-	Brand         string `json:"brand" validate:"required"`
-	Model         string `json:"model" validate:"required"`
-	SerialNumber  string `json:"serial_number" validate:"required"`
-	Status        string `json:"status" validate:"required"`
-	OwnerType     string `json:"owner_type" validate:"required"`
-	WarrantyStart string `json:"warranty_start" validate:"required"`
-	WarrantyEnd   string `json:"warranty_end" validate:"required"`
+	Brand         string `json:"brand" `
+	Model         string `json:"model" `
+	SerialNumber  string `json:"serial_number" `
+	Status        string `json:"status" `
+	OwnerType     string `json:"owner_type" `
+	WarrantyStart string `json:"warranty_start" `
+	WarrantyEnd   string `json:"warranty_end" `
 
 	Processor       string `json:"processor"`
 	RAM             string `json:"ram"`
