@@ -53,3 +53,26 @@ type AssetDetails struct {
 
 	DPI *int `db:"dpi" json:"dpi,omitempty"`
 }
+
+type UpdateAssetRequest struct {
+	Brand         string `json:"brand" validate:"required"`
+	Model         string `json:"model" validate:"required"`
+	SerialNumber  string `json:"serial_number" validate:"required"`
+	Status        string `json:"status" validate:"required"`
+	OwnerType     string `json:"owner_type" validate:"required"`
+	WarrantyStart string `json:"warranty_start" validate:"required"`
+	WarrantyEnd   string `json:"warranty_end" validate:"required"`
+
+	Processor       string `json:"processor"`
+	RAM             string `json:"ram"`
+	Storage         string `json:"storage"`
+	OperatingSystem string `json:"operating_system"`
+	Charger         bool   `json:"charger"`
+	DevicePassword  string `json:"device_password"`
+
+	Layout string `json:"layout"`
+
+	Connectivity string `json:"connectivity"`
+
+	DPI int `json:"dpi"`
+}
