@@ -22,3 +22,19 @@ func SendForRepair(w http.ResponseWriter, r *http.Request) {
 		Message: "Asset send for repair successfully",
 	})
 }
+
+func CompleteRepair(w http.ResponseWriter, r *http.Request) {
+	assetID := r.PathValue("assetID")
+
+	statusCode, err := service.CompleteRepair(assetID)
+	if err != nil {
+		utils.RespondError(w, statusCode, err, "failed to complete repair")
+		return
+	}
+
+	utils.RespondJSON(w, http.StatusOK, struct {
+		Message string `json:"message"`
+	}{
+		Message: "Asset repaired successfully",
+	})
+}

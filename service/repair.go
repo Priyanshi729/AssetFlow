@@ -16,3 +16,15 @@ func SendForRepair(assetID string) (int, error) {
 
 	return http.StatusOK, nil
 }
+
+func CompleteRepair(assetID string) (int, error) {
+	if err := repository.CompleteRepair(assetID); err != nil {
+		return http.StatusBadRequest, err
+	}
+
+	if err := repository.UpdateAssetStatus(assetID, "available"); err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	return http.StatusOK, nil
+}
