@@ -39,6 +39,7 @@ func setupPrivateRoutes(mux *http.ServeMux) {
 
 	mux.Handle("POST /v1/assets", protectedWithRoles(handler.CreateAsset, "admin", "project-manager"))
 	mux.Handle("GET /v1/assets", protectedWithRoles(handler.GetAssets, "admin", "project-manager"))
+	mux.Handle("GET /v1/assets/{assetID}", protectedWithRoles(handler.GetAssetByID, "admin", "project-manager"))
 
 }
 

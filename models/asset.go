@@ -37,3 +37,19 @@ type Asset struct {
 	WarrantyEnd   string `db:"warranty_end" json:"warranty_end"`
 	CreatedAt     string `db:"created_at" json:"created_at"`
 }
+
+type AssetDetails struct {
+	Asset
+
+	Processor       *string `db:"processor" json:"processor,omitempty"`
+	RAM             *string `db:"ram" json:"ram,omitempty"`
+	Storage         *string `db:"storage" json:"storage,omitempty"`
+	OperatingSystem *string `db:"operating_system" json:"operating_system,omitempty"`
+	Charger         *bool   `db:"charger" json:"charger,omitempty"`
+	DevicePassword  *string `db:"device_password" json:"device_password,omitempty"`
+
+	Layout       *string `db:"layout" json:"layout,omitempty"`
+	Connectivity *string `db:"connectivity" json:"connectivity,omitempty"`
+
+	DPI *int `db:"dpi" json:"dpi,omitempty"`
+}

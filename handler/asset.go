@@ -41,3 +41,16 @@ func GetAssets(w http.ResponseWriter, r *http.Request) {
 
 	utils.RespondJSON(w, http.StatusOK, assets)
 }
+
+func GetAssetByID(w http.ResponseWriter, r *http.Request) {
+
+	assetID := r.PathValue("assetID")
+
+	asset, statusCode, err := service.GetAssetByID(assetID)
+	if err != nil {
+		utils.RespondError(w, statusCode, err, "failed to get asset")
+		return
+	}
+
+	utils.RespondJSON(w, http.StatusOK, asset)
+}

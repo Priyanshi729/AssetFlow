@@ -65,3 +65,13 @@ func GetAssets() ([]models.Asset, int, error) {
 
 	return assets, http.StatusOK, nil
 }
+
+func GetAssetByID(assetID string) (*models.AssetDetails, int, error) {
+
+	asset, err := repository.GetAssetByID(assetID)
+	if err != nil {
+		return nil, http.StatusNotFound, err
+	}
+
+	return asset, http.StatusOK, nil
+}
