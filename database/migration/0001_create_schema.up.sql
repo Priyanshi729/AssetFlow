@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS assets (
                         asset_id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                         brand           TEXT          NOT NULL,
                         model           TEXT          NOT NULL,
-                        serial_number       TEXT UNIQUE   NOT NULL,
+                        serial_number       TEXT      NOT NULL,
                         asset_type            asset_type    NOT NULL,
                         status          asset_status  DEFAULT 'available',
                         owner_type           owner_type   DEFAULT 'remotestate',
@@ -75,6 +75,10 @@ CREATE TABLE IF NOT EXISTS assets (
                         archived_at     TIMESTAMPTZ
 
 );
+
+CREATE UNIQUE INDEX idx_unique_serial_number
+    ON assets(serial_number)
+    WHERE archived_at IS NULL;
 
 
 
