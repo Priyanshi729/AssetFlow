@@ -163,6 +163,73 @@ func GetMouseByID(assetID string) (*models.MouseRequestSpecific, error) {
 	return &mouse, nil
 }
 
+func UpdateAsset(db sqlx.Ext, assetID string, req models.UpdateAssetRequest) error {
+
+	query := `
+	UPDATE assets
+	SET
+		brand = $2,model = $3,serial_number = $4,status = $5,owner_type = $6,warranty_start = $7,warranty_end = $8,updated_at = CURRENT_TIMESTAMP
+	WHERE asset_id = $1
+	  AND archived_at IS NULL
+	`
+	_, err := db.Exec(query, assetID, req.Brand, req.Model, req.SerialNumber, req.Status, req.OwnerType, req.WarrantyStart, req.WarrantyEnd)
+
+	return err
+}
+
+func UpdateLaptop(db sqlx.Ext, assetID string, req *models.LaptopRequestSpecific) error {
+
+	query := `
+	UPDATE laptops
+	SET
+		processor = $2,ram = $3,storage = $4,operating_system = $5,charger = $6,device_password = $7
+	WHERE asset_id = $1
+	`
+
+	_, err := db.Exec(query, assetID, req.Processor, req.RAM, req.Storage, req.OperatingSystem, req.Charger, req.DevicePassword)
+
+	return err
+}
+
+func UpdateMobile(db sqlx.Ext, assetID string, req *models.UpdateMobileRequest) error {
+
+	query := `
+	UPDATE mobiles
+	SET
+		ram = $2,storage = $3,operating_system = $4,charger = $5,device_password = $6
+	WHERE asset_id = $1
+	`
+
+	_, err := db.Exec(query, assetID, req.RAM, req.Storage, req.OperatingSystem, req.Charger, req.DevicePassword)
+	return err
+}
+
+func UpdateKeyboard(db sqlx.Ext, assetID string, req *models.UpdateKeyboardRequest) error {
+
+	query := `
+	UPDATE keyboards
+	SET
+		layout = $2,connectivity = $3
+	WHERE asset_id = $1
+	`
+
+	_, err := db.Exec(query, assetID, req.Layout, req.Connectivity)
+	return err
+}
+
+func UpdateMouse(db sqlx.Ext, assetID string, req *models.UpdateMouseRequest) error {
+
+	query := `
+	UPDATE mouses
+	SET
+		dpi = $2,connectivity = $3
+	WHERE asset_id = $1
+	`
+
+	_, err := db.Exec(query, assetID, req.DPI, req.Connectivity)
+	return err
+}
+
 func DeleteAsset(assetID string) error {
 
 	query := `
