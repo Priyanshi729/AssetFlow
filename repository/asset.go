@@ -90,6 +90,79 @@ func GetAssets() ([]models.Asset, error) {
 	return assets, nil
 }
 
+func GetAssetByID(assetID string) (*models.Asset, error) {
+
+	query := `SELECT
+		asset_id,brand,model,serial_number,asset_type,status,owner_type,warranty_start,warranty_end,created_at
+	FROM assets
+	WHERE asset_id = $1
+	  AND archived_at IS NULL
+	`
+	var asset models.Asset
+
+	if err := database.DB.Get(&asset, query, assetID); err != nil {
+		return nil, err
+	}
+
+	return &asset, nil
+}
+
+func GetLaptopByID(assetID string) (*models.LaptopRequestSpecific, error) {
+	query := `SELECT
+              processor,ram,storage,operating_system,charger,device_password
+              FROM laptops
+              WHERE asset_id = $1
+              `
+	var laptop models.LaptopRequestSpecific
+
+	if err := database.DB.Get(&laptop, query, assetID); err != nil {
+		return nil, err
+	}
+	return &laptop, nil
+}
+
+func GetMobileByID(assetID string) (*models.MobileRequestSpecific, error) {
+	query := `SELECT
+              ram,storage,operating_system,charger,device_password
+              FROM mobiles
+              WHERE asset_id = $1
+              `
+	var mobile models.MobileRequestSpecific
+
+	if err := database.DB.Get(&mobile, query, assetID); err != nil {
+		return nil, err
+	}
+	return &mobile, nil
+}
+
+func GetKeyboardByID(assetID string) (*models.KeyboardRequestSpecific, error) {
+	query := `SELECT
+              layout,connectivity
+              FROM keyboards
+              WHERE asset_id = $1
+              `
+	var keyboard models.KeyboardRequestSpecific
+
+	if err := database.DB.Get(&keyboard, query, assetID); err != nil {
+		return nil, err
+	}
+	return &keyboard, nil
+}
+
+func GetMouseByID(assetID string) (*models.MouseRequestSpecific, error) {
+	query := `SELECT
+              dpi,connectivity
+              FROM mouses
+              WHERE asset_id = $1`
+
+	var mouse models.MouseRequestSpecific
+	if err := database.DB.Get(&mouse, query, assetID); err != nil {
+		return nil, err
+	}
+
+	return &mouse, nil
+}
+
 func GetAssetType(assetID string) (string, error) {
 	var assetType string
 

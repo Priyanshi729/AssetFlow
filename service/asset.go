@@ -66,6 +66,77 @@ func GetAssets() ([]models.Asset, int, error) {
 	return assets, http.StatusOK, nil
 }
 
+func GetAssetByID(assetID string) (interface{}, int, error) {
+	asset, err := repository.GetAssetByID(assetID)
+	if err != nil {
+		return nil, http.StatusNotFound, err
+	}
+
+	switch asset.AssetType {
+	case "laptop":
+
+		laptop, err := repository.GetLaptopByID(assetID)
+		if err != nil {
+			return nil, http.StatusInternalServerError, err
+		}
+		return struct {
+			Asset  *models.Asset
+			Laptop *models.LaptopRequestSpecific
+		}{
+			Asset:  asset,
+			Laptop: laptop,
+		}, http.StatusOK, nil
+
+	case "mobile":
+
+		mobile, err := repository.GetMobileByID(assetID)
+		if err != nil {
+			return nil, http.StatusInternalServerError, err
+		}
+
+		return struct {
+			Asset  *models.Asset
+			Mobile *models.MobileRequestSpecific
+		}{
+			Asset:  asset,
+			Mobile: mobile,
+		}, http.StatusOK, nil
+
+	case "keyboard":
+
+		keyboard, err := repository.GetKeyboardByID(assetID)
+		if err != nil {
+			return nil, http.StatusInternalServerError, err
+		}
+
+		return struct {
+			Asset    *models.Asset
+			Keyboard *models.KeyboardRequestSpecific
+		}{
+			Asset:    asset,
+			Keyboard: keyboard,
+		}, http.StatusOK, nil
+
+	case "mouse":
+
+		mouse, err := repository.GetMouseByID(assetID)
+		if err != nil {
+			return nil, http.StatusInternalServerError, err
+		}
+
+		return struct {
+			Asset *models.Asset
+			Mouse *models.MouseRequestSpecific
+		}{
+			Asset: asset,
+			Mouse: mouse,
+		}, http.StatusOK, nil
+
+	default:
+		return nil, http.StatusBadRequest, fmt.Errorf("invalid asset type")
+	}
+}
+
 func UpdateAsset(assetID string, body models.UpdateAssetRequest) (int, error) {
 	v := validator.New()
 	if err := v.Struct(body); err != nil {
