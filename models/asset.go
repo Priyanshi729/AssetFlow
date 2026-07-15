@@ -10,19 +10,37 @@ type CreateAssetRequest struct {
 	WarrantyStart string `json:"warranty_start" validate:"required"`
 	WarrantyEnd   string `json:"warranty_end" validate:"required"`
 
-	OperatingSystem string `json:"operating_system"`
-	RAM             string `json:"ram"`
-	Storage         string `json:"storage"`
-	Charger         bool   `json:"charger"`
-	DevicePassword  string `json:"device_password"`
+	Laptop   LaptopRequestSpecific   `json:"laptop"`
+	Mobile   MobileRequestSpecific   `json:"mobile"`
+	Keyboard KeyboardRequestSpecific `json:"keyboard"`
+	Mouse    MouseRequestSpecific    `json:"mouse"`
+}
 
-	Processor string `json:"processor"`
+type LaptopRequestSpecific struct {
+	Processor       string `db:"processor" json:"processor"`
+	RAM             string `db:"ram" json:"ram"`
+	Storage         string `db:"storage" json:"storage"`
+	OperatingSystem string `db:"operating_system" json:"operating_system"`
+	Charger         bool   `db:"charger" json:"charger"`
+	DevicePassword  string `db:"device_password" json:"device_password"`
+}
 
-	Layout string `json:"layout"`
+type MobileRequestSpecific struct {
+	RAM             string `db:"ram" json:"ram"`
+	Storage         string `db:"storage" json:"storage"`
+	OperatingSystem string `db:"operating_system" json:"operating_system"`
+	Charger         bool   `db:"charger" json:"charger"`
+	DevicePassword  string `db:"device_password" json:"device_password"`
+}
 
-	Connectivity string `json:"connectivity"`
+type MouseRequestSpecific struct {
+	DPI          int    `db:"dpi" json:"dpi"`
+	Connectivity string `db:"connectivity" json:"connectivity"`
+}
 
-	DPI int `json:"dpi"`
+type KeyboardRequestSpecific struct {
+	Layout       string `db:"layout" json:"layout"`
+	Connectivity string `db:"connectivity" json:"connectivity"`
 }
 
 type Asset struct {
@@ -38,41 +56,17 @@ type Asset struct {
 	CreatedAt     string `db:"created_at" json:"created_at"`
 }
 
-type AssetDetails struct {
-	Asset
-
-	Processor       *string `db:"processor" json:"processor,omitempty"`
-	RAM             *string `db:"ram" json:"ram,omitempty"`
-	Storage         *string `db:"storage" json:"storage,omitempty"`
-	OperatingSystem *string `db:"operating_system" json:"operating_system,omitempty"`
-	Charger         *bool   `db:"charger" json:"charger,omitempty"`
-	DevicePassword  *string `db:"device_password" json:"device_password,omitempty"`
-
-	Layout       *string `db:"layout" json:"layout,omitempty"`
-	Connectivity *string `db:"connectivity" json:"connectivity,omitempty"`
-
-	DPI *int `db:"dpi" json:"dpi,omitempty"`
-}
-
 type UpdateAssetRequest struct {
-	Brand         string `json:"brand" `
-	Model         string `json:"model" `
-	SerialNumber  string `json:"serial_number" `
-	Status        string `json:"status" `
-	OwnerType     string `json:"owner_type" `
-	WarrantyStart string `json:"warranty_start" `
-	WarrantyEnd   string `json:"warranty_end" `
+	Brand         string `json:"brand"`
+	Model         string `json:"model"`
+	SerialNumber  string `json:"serial_number"`
+	Status        string `json:"status"`
+	OwnerType     string `json:"owner_type"`
+	WarrantyStart string `json:"warranty_start"`
+	WarrantyEnd   string `json:"warranty_end"`
 
-	Processor       string `json:"processor"`
-	RAM             string `json:"ram"`
-	Storage         string `json:"storage"`
-	OperatingSystem string `json:"operating_system"`
-	Charger         bool   `json:"charger"`
-	DevicePassword  string `json:"device_password"`
-
-	Layout string `json:"layout"`
-
-	Connectivity string `json:"connectivity"`
-
-	DPI int `json:"dpi"`
+	Laptop   LaptopRequestSpecific   `json:"laptop"`
+	Mobile   MobileRequestSpecific   `json:"mobile"`
+	Keyboard KeyboardRequestSpecific `json:"keyboard"`
+	Mouse    MouseRequestSpecific    `json:"mouse"`
 }

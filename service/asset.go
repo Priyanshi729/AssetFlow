@@ -25,7 +25,7 @@ func CreateAsset(asset models.CreateAssetRequest) (string, int, error) {
 
 		var err error
 
-		assetID, err = repository.CreateAsset(tx, asset.Brand, asset.Model, asset.SerialNumber, asset.AssetType, asset.Status, asset.OwnerType, asset.WarrantyStart, asset.WarrantyEnd)
+		assetID, err = repository.CreateAsset(tx, asset)
 		if err != nil {
 			return err
 		}
@@ -33,16 +33,16 @@ func CreateAsset(asset models.CreateAssetRequest) (string, int, error) {
 		switch asset.AssetType {
 
 		case "laptop":
-			return repository.CreateLaptop(tx, assetID, asset.Processor, asset.RAM, asset.Storage, asset.OperatingSystem, asset.Charger, asset.DevicePassword)
+			return repository.CreateLaptop(tx, assetID, asset.Laptop)
 
 		case "mobile":
-			return repository.CreateMobile(tx, assetID, asset.OperatingSystem, asset.RAM, asset.Storage, asset.Charger, asset.DevicePassword)
+			return repository.CreateMobile(tx, assetID, asset.Mobile)
 
 		case "keyboard":
-			return repository.CreateKeyboard(tx, assetID, asset.Layout, asset.Connectivity)
+			return repository.CreateKeyboard(tx, assetID, asset.Keyboard)
 
 		case "mouse":
-			return repository.CreateMouse(tx, assetID, asset.DPI, asset.Connectivity)
+			return repository.CreateMouse(tx, assetID, asset.Mouse)
 
 		default:
 			return fmt.Errorf("invalid asset type")
@@ -64,16 +64,6 @@ func GetAssets() ([]models.Asset, int, error) {
 	}
 
 	return assets, http.StatusOK, nil
-}
-
-func GetAssetByID(assetID string) (*models.AssetDetails, int, error) {
-
-	asset, err := repository.GetAssetByID(assetID)
-	if err != nil {
-		return nil, http.StatusNotFound, err
-	}
-
-	return asset, http.StatusOK, nil
 }
 
 func UpdateAsset(assetID string, body models.UpdateAssetRequest) (int, error) {

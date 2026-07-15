@@ -7,7 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func CreateAsset(db sqlx.Ext, brand, model, serialNumber, assetType, status, ownerType, warrantyStart, warrantyEnd string) (string, error) {
+func CreateAsset(db sqlx.Ext, req models.CreateAssetRequest) (string, error) {
 
 	var assetID string
 
@@ -16,7 +16,7 @@ func CreateAsset(db sqlx.Ext, brand, model, serialNumber, assetType, status, own
 		VALUES (TRIM($1),TRIM($2),TRIM($3),$4,$5,$6,$7,$8)
 		RETURNING asset_id`
 
-	err := sqlx.Get(db, &assetID, query, brand, model, serialNumber, assetType, status, ownerType, warrantyStart, warrantyEnd)
+	err := sqlx.Get(db, &assetID, query, req.Brand, req.Model, req.SerialNumber, req.AssetType, req.Status, req.OwnerType, req.WarrantyStart, req.WarrantyEnd)
 	if err != nil {
 		return "", err
 	}
@@ -24,50 +24,50 @@ func CreateAsset(db sqlx.Ext, brand, model, serialNumber, assetType, status, own
 	return assetID, nil
 }
 
-func CreateLaptop(db sqlx.Ext, assetID, processor, ram, storage, operatingSystem string, charger bool, devicePassword string) error {
+func CreateLaptop(db sqlx.Ext, assetID string, req models.LaptopRequestSpecific) error {
 
 	query := `
 		INSERT INTO laptops (asset_id,processor,ram,storage,operating_system,charger,device_password)
 		VALUES ($1,$2,$3,$4,$5,$6,$7)
 	`
 
-	_, err := db.Exec(query, assetID, processor, ram, storage, operatingSystem, charger, devicePassword)
+	_, err := db.Exec(query, assetID, req.Processor, req.RAM, req.Storage, req.OperatingSystem, req.Charger, req.DevicePassword)
 
 	return err
 }
 
-func CreateMobile(db sqlx.Ext, assetID, operatingSystem, ram, storage string, charger bool, devicePassword string) error {
+func CreateMobile(db sqlx.Ext, assetID string, req models.MobileRequestSpecific) error {
 
 	query := `
 		INSERT INTO mobiles (asset_id,operating_system,ram,storage,charger,device_password)
 		VALUES ($1,$2,$3,$4,$5,$6)
 	`
 
-	_, err := db.Exec(query, assetID, operatingSystem, ram, storage, charger, devicePassword)
+	_, err := db.Exec(query, assetID, req.OperatingSystem, req.RAM, req.Storage, req.Charger, req.DevicePassword)
 
 	return err
 }
 
-func CreateKeyboard(db sqlx.Ext, assetID, layout, connectivity string) error {
+func CreateKeyboard(db sqlx.Ext, assetID string, req models.KeyboardRequestSpecific) error {
 
 	query := `
 		INSERT INTO keyboards (asset_id,layout,connectivity)
 		VALUES ($1,$2,$3)
 	`
 
-	_, err := db.Exec(query, assetID, layout, connectivity)
+	_, err := db.Exec(query, assetID, req.Layout, req.Connectivity)
 
 	return err
 }
 
-func CreateMouse(db sqlx.Ext, assetID string, dpi int, connectivity string) error {
+func CreateMouse(db sqlx.Ext, assetID string, req models.MouseRequestSpecific) error {
 
 	query := `
 		INSERT INTO mouses (asset_id,dpi,connectivity)
 		VALUES ($1,$2,$3)
 	`
 
-	_, err := db.Exec(query, assetID, dpi, connectivity)
+	_, err := db.Exec(query, assetID, req.DPI, req.Connectivity)
 
 	return err
 }
@@ -88,42 +88,6 @@ func GetAssets() ([]models.Asset, error) {
 	}
 
 	return assets, nil
-}
-
-func GetAssetByID(assetID string) (*models.AssetDetails, error) {
-
-	query := `
-	SELECT
-		a.asset_id,a.brand,a.model,a.serial_number,a.asset_type,a.status,a.owner_type,a.warranty_start,a.warranty_end,a.created_at,l.processor,
-		COALESCE(l.ram, mb.ram) AS ram,
-		COALESCE(l.storage, mb.storage) AS storage,
-		COALESCE(l.operating_system, mb.operating_system) AS operating_system,
-		COALESCE(l.charger, mb.charger) AS charger,
-		COALESCE(l.device_password, mb.device_password) AS device_password,
-		k.layout,
-		COALESCE(k.connectivity, ms.connectivity) AS connectivity,
-        ms.dpi
-
-	FROM assets a
-    LEFT JOIN laptops l
-		ON a.asset_id = l.asset_id
-
-	LEFT JOIN mobiles mb
-		ON a.asset_id = mb.asset_id
-    LEFT JOIN keyboards k
-		ON a.asset_id = k.asset_id
-    LEFT JOIN mouses ms
-		ON a.asset_id = ms.asset_id
-    WHERE a.asset_id = $1
-	  AND a.archived_at IS NULL;
-	`
-	var asset models.AssetDetails
-
-	if err := database.DB.Get(&asset, query, assetID); err != nil {
-		return nil, err
-	}
-
-	return &asset, nil
 }
 
 func GetAssetType(assetID string) (string, error) {
