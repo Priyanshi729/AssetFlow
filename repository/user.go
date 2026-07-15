@@ -80,6 +80,27 @@ func GetUser(userID string) (*models.User, error) {
 	return &user, nil
 }
 
+func GetUserAssets(userID string) ([]models.Asset, error) {
+
+	query := `
+	SELECT
+		a.asset_id,a.brand,a.model,a.serial_number,a.asset_type,a.status,a.owner_type,a.warranty_start,a.warranty_end,a.created_at
+	FROM assets a
+	INNER JOIN asset_assignments aa
+	ON a.asset_id = aa.asset_id
+    WHERE aa.assigned_to = $1
+	AND aa.returned_at IS NULL
+	AND a.archived_at IS NULL
+	AND aa.archived_at IS NULL
+	`
+	var assets []models.Asset
+	if err := database.DB.Select(&assets, query, userID); err != nil {
+		return nil, err
+	}
+
+	return assets, nil
+}
+
 func DeleteUser(userID string) error {
 
 	query := `

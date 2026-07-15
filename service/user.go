@@ -68,10 +68,6 @@ func GetUser(userID string) (*models.User, error) {
 	return repository.GetUser(userID)
 }
 
-func LogoutUser() (int, error) {
-	return http.StatusOK, nil
-}
-
 func DeleteUser(userID string) (int, error) {
 
 	if err := repository.DeleteUser(userID); err != nil {
