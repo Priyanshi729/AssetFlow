@@ -74,8 +74,10 @@ func UpdateAsset(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.RespondJSON(w, http.StatusOK, map[string]string{
-		"message": "asset updated successfully",
+	utils.RespondJSON(w, http.StatusCreated, struct {
+		Message string `json:"message"`
+	}{
+		Message: "Asset updated successfully",
 	})
 }
 
