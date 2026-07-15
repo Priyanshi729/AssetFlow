@@ -16,9 +16,9 @@ func RegisterUser(user models.RegisterUser) (string, int, error) {
 		return "", http.StatusBadRequest, err
 	}
 
-	exists, existerr := repository.IsUserExists(user.Email)
-	if existerr != nil {
-		return "", http.StatusInternalServerError, existerr
+	exists, existErr := repository.IsUserExists(user.Email)
+	if existErr != nil {
+		return "", http.StatusInternalServerError, existErr
 	}
 	if exists {
 		return "", http.StatusBadRequest, nil
@@ -34,9 +34,9 @@ func RegisterUser(user models.RegisterUser) (string, int, error) {
 		return "", http.StatusInternalServerError, userErr
 	}
 
-	token, tokenerr := utils.GenerateJWT(userID, user.Role)
-	if tokenerr != nil {
-		return "", http.StatusInternalServerError, tokenerr
+	token, tokenErr := utils.GenerateJWT(userID, user.Role)
+	if tokenErr != nil {
+		return "", http.StatusInternalServerError, tokenErr
 	}
 
 	return token, http.StatusOK, nil
