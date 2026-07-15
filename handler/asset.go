@@ -55,29 +55,6 @@ func GetAssetByID(w http.ResponseWriter, r *http.Request) {
 	utils.RespondJSON(w, http.StatusOK, asset)
 }
 
-func UpdateAsset(w http.ResponseWriter, r *http.Request) {
-	assetID := r.PathValue("assetID")
-
-	var body models.UpdateAssetRequest
-
-	if err := utils.ParseBody(r, &body); err != nil {
-		utils.RespondError(w, http.StatusBadRequest, err, "failed to parse request body")
-		return
-	}
-
-	statusCode, err := service.UpdateAsset(assetID, body)
-	if err != nil {
-		utils.RespondError(w, statusCode, err, "failed to update asset")
-		return
-	}
-
-	utils.RespondJSON(w, http.StatusCreated, struct {
-		Message string `json:"message"`
-	}{
-		Message: "Updated asset successfully",
-	})
-}
-
 func DeleteAsset(w http.ResponseWriter, r *http.Request) {
 	assetID := r.PathValue("assetID")
 

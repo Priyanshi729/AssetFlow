@@ -79,7 +79,6 @@ func GetAssetByID(assetID string) (*models.AssetDetail, int, error) {
 	switch asset.AssetType {
 
 	case "laptop":
-
 		laptop, err := repository.GetLaptopByID(assetID)
 		if err != nil {
 			return nil, http.StatusInternalServerError, err
@@ -88,7 +87,6 @@ func GetAssetByID(assetID string) (*models.AssetDetail, int, error) {
 		assetDetail.Laptop = laptop
 
 	case "mobile":
-
 		mobile, err := repository.GetMobileByID(assetID)
 		if err != nil {
 			return nil, http.StatusInternalServerError, err
@@ -97,7 +95,6 @@ func GetAssetByID(assetID string) (*models.AssetDetail, int, error) {
 		assetDetail.Mobile = mobile
 
 	case "keyboard":
-
 		keyboard, err := repository.GetKeyboardByID(assetID)
 		if err != nil {
 			return nil, http.StatusInternalServerError, err
@@ -106,7 +103,6 @@ func GetAssetByID(assetID string) (*models.AssetDetail, int, error) {
 		assetDetail.Keyboard = keyboard
 
 	case "mouse":
-
 		mouse, err := repository.GetMouseByID(assetID)
 		if err != nil {
 			return nil, http.StatusInternalServerError, err
@@ -119,52 +115,6 @@ func GetAssetByID(assetID string) (*models.AssetDetail, int, error) {
 	}
 
 	return assetDetail, http.StatusOK, nil
-}
-
-func UpdateAsset(assetID string, body models.UpdateAssetRequest) (int, error) {
-	v := validator.New()
-	if err := v.Struct(body); err != nil {
-		return http.StatusBadRequest, err
-	}
-
-	assetType, err := repository.GetAssetType(assetID)
-	if err != nil {
-		return http.StatusNotFound, err
-	}
-
-	err = database.Tx(func(tx *sqlx.Tx) error {
-		if err := repository.UpdateAsset(tx, assetID, body.Brand, body.Model, body.SerialNumber, body.Status, body.OwnerType, body.WarrantyStart, body.WarrantyEnd); err != nil {
-			return err
-		}
-
-		switch assetType {
-
-		case "laptop":
-
-			return repository.UpdateLaptop(tx, assetID, body.Processor, body.RAM, body.Storage, body.OperatingSystem, body.Charger, body.DevicePassword)
-
-		case "mobile":
-
-			return repository.UpdateMobile(tx, assetID, body.OperatingSystem, body.RAM, body.Storage, body.Charger, body.DevicePassword)
-
-		case "keyboard":
-
-			return repository.UpdateKeyboard(tx, assetID, body.Layout, body.Connectivity)
-
-		case "mouse":
-
-			return repository.UpdateMouse(tx, assetID, body.DPI, body.Connectivity)
-
-		default:
-			return fmt.Errorf("unsupported asset type")
-		}
-	})
-
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-
-	return http.StatusOK, nil
 }
 
 func DeleteAsset(assetID string) (int, error) {

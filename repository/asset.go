@@ -111,7 +111,7 @@ func GetLaptopByID(assetID string) (*models.LaptopRequestSpecific, error) {
 	query := `SELECT
               processor,ram,storage,operating_system,charger,device_password
               FROM laptops
-              WHERE asset_id = $1
+              WHERE asset_id = $1;
               `
 	var laptop models.LaptopRequestSpecific
 
@@ -125,7 +125,7 @@ func GetMobileByID(assetID string) (*models.MobileRequestSpecific, error) {
 	query := `SELECT
               ram,storage,operating_system,charger,device_password
               FROM mobiles
-              WHERE asset_id = $1
+              WHERE asset_id = $1;
               `
 	var mobile models.MobileRequestSpecific
 
@@ -139,7 +139,7 @@ func GetKeyboardByID(assetID string) (*models.KeyboardRequestSpecific, error) {
 	query := `SELECT
               layout,connectivity
               FROM keyboards
-              WHERE asset_id = $1
+              WHERE asset_id = $1;
               `
 	var keyboard models.KeyboardRequestSpecific
 
@@ -153,7 +153,7 @@ func GetMouseByID(assetID string) (*models.MouseRequestSpecific, error) {
 	query := `SELECT
               dpi,connectivity
               FROM mouses
-              WHERE asset_id = $1`
+              WHERE asset_id = $1;`
 
 	var mouse models.MouseRequestSpecific
 	if err := database.DB.Get(&mouse, query, assetID); err != nil {
@@ -161,89 +161,6 @@ func GetMouseByID(assetID string) (*models.MouseRequestSpecific, error) {
 	}
 
 	return &mouse, nil
-}
-
-func GetAssetType(assetID string) (string, error) {
-	var assetType string
-
-	query := `
-		SELECT asset_type
-		FROM assets
-		WHERE asset_id = $1
-		  AND archived_at IS NULL
-	`
-
-	if err := database.DB.Get(&assetType, query, assetID); err != nil {
-		return "", err
-	}
-
-	return assetType, nil
-}
-
-func UpdateAsset(db sqlx.Ext, assetID, brand, model, serialNumber, status, ownerType, warrantyStart, warrantyEnd string) error {
-
-	query := `
-	UPDATE assets
-	SET
-		brand=$2,model=$3,serial_number=$4,status=$5,owner_type=$6,warranty_start=$7,warranty_end=$8,updated_at=CURRENT_TIMESTAMP
-	WHERE asset_id=$1
-	  AND archived_at IS NULL	`
-
-	_, err := db.Exec(query, assetID, brand, model, serialNumber, status, ownerType, warrantyStart, warrantyEnd)
-
-	return err
-}
-
-func UpdateLaptop(db sqlx.Ext, assetID, processor, ram, storage, operatingSystem string, charger bool, devicePassword string) error {
-	query := `
-	UPDATE laptops
-	SET
-		processor = $2,ram = $3,storage = $4,operating_system = $5,charger = $6,device_password = $7
-	WHERE asset_id = $1
-	`
-
-	_, err := db.Exec(query, assetID, processor, ram, storage, operatingSystem, charger, devicePassword)
-
-	return err
-}
-
-func UpdateMobile(db sqlx.Ext, assetID, operatingSystem, ram, storage string, charger bool, devicePassword string) error {
-	query := `
-	UPDATE mobiles
-	SET
-		operating_system = $2,ram = $3,storage = $4,charger = $5,device_password = $6
-	WHERE asset_id = $1
-	`
-
-	_, err := db.Exec(query, assetID, operatingSystem, ram, storage, charger, devicePassword)
-
-	return err
-}
-
-func UpdateKeyboard(db sqlx.Ext, assetID, layout, connectivity string) error {
-	query := `
-	UPDATE keyboards
-	SET
-		layout = $2,connectivity = $3
-	WHERE asset_id = $1
-	`
-
-	_, err := db.Exec(query, assetID, layout, connectivity)
-
-	return err
-}
-
-func UpdateMouse(db sqlx.Ext, assetID string, dpi int, connectivity string) error {
-	query := `
-	UPDATE mouses
-	SET
-		dpi = $2,connectivity = $3
-	WHERE asset_id = $1
-	`
-
-	_, err := db.Exec(query, assetID, dpi, connectivity)
-
-	return err
 }
 
 func DeleteAsset(assetID string) error {

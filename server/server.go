@@ -41,7 +41,7 @@ func setupPrivateRoutes(mux *http.ServeMux) {
 	mux.Handle("GET /v1/assets", protectedWithRoles(handler.GetAssets, "admin", "project-manager"))
 
 	mux.Handle("GET /v1/assets/{assetID}", protectedWithRoles(handler.GetAssetByID, "admin", "project-manager"))
-	mux.Handle("PUT /v1/assets/{assetID}", protectedWithRoles(handler.UpdateAsset, "admin", "project-manager"))
+
 	mux.Handle("DELETE /v1/assets/{assetID}", protectedWithRoles(handler.DeleteAsset, "admin", "project-manager"))
 	mux.Handle("POST /v1/assets/assign/{assetID}", protectedWithRoles(handler.AssignAsset, "admin", "project-manager"))
 	mux.Handle("PUT /v1/assets/return/{assetID}", protectedWithRoles(handler.ReturnAsset, "admin", "project-manager"))

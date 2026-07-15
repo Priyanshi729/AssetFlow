@@ -66,16 +66,16 @@ type AssetDetail struct {
 }
 
 type UpdateAssetRequest struct {
-	Brand         string `json:"brand"`
-	Model         string `json:"model"`
-	SerialNumber  string `json:"serial_number"`
-	Status        string `json:"status"`
-	OwnerType     string `json:"owner_type"`
-	WarrantyStart string `json:"warranty_start"`
-	WarrantyEnd   string `json:"warranty_end"`
+	Brand         *string `json:"brand"`
+	Model         *string `json:"model"`
+	SerialNumber  *string `json:"serial_number"`
+	Status        *string `json:"status"`
+	OwnerType     *string `json:"owner_type"`
+	WarrantyStart *string `json:"warranty_start"`
+	WarrantyEnd   *string `json:"warranty_end"`
 
-	Laptop   LaptopRequestSpecific   `json:"laptop"`
-	Mobile   MobileRequestSpecific   `json:"mobile"`
-	Keyboard KeyboardRequestSpecific `json:"keyboard"`
-	Mouse    MouseRequestSpecific    `json:"mouse"`
+	Laptop   *LaptopRequestSpecific   `json:"laptop,omitempty"`
+	Mobile   *MobileRequestSpecific   `json:"mobile,omitempty"`
+	Keyboard *KeyboardRequestSpecific `json:"keyboard,omitempty"`
+	Mouse    *MouseRequestSpecific    `json:"mouse,omitempty"`
 }
