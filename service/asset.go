@@ -66,26 +66,26 @@ func GetAssets() ([]models.Asset, int, error) {
 	return assets, http.StatusOK, nil
 }
 
-func GetAssetByID(assetID string) (interface{}, int, error) {
+func GetAssetByID(assetID string) (*models.AssetDetail, int, error) {
 	asset, err := repository.GetAssetByID(assetID)
 	if err != nil {
 		return nil, http.StatusNotFound, err
 	}
 
+	assetDetail := &models.AssetDetail{
+		Asset: *asset,
+	}
+
 	switch asset.AssetType {
+
 	case "laptop":
 
 		laptop, err := repository.GetLaptopByID(assetID)
 		if err != nil {
 			return nil, http.StatusInternalServerError, err
 		}
-		return struct {
-			Asset  *models.Asset
-			Laptop *models.LaptopRequestSpecific
-		}{
-			Asset:  asset,
-			Laptop: laptop,
-		}, http.StatusOK, nil
+
+		assetDetail.Laptop = laptop
 
 	case "mobile":
 
@@ -94,13 +94,7 @@ func GetAssetByID(assetID string) (interface{}, int, error) {
 			return nil, http.StatusInternalServerError, err
 		}
 
-		return struct {
-			Asset  *models.Asset
-			Mobile *models.MobileRequestSpecific
-		}{
-			Asset:  asset,
-			Mobile: mobile,
-		}, http.StatusOK, nil
+		assetDetail.Mobile = mobile
 
 	case "keyboard":
 
@@ -109,13 +103,7 @@ func GetAssetByID(assetID string) (interface{}, int, error) {
 			return nil, http.StatusInternalServerError, err
 		}
 
-		return struct {
-			Asset    *models.Asset
-			Keyboard *models.KeyboardRequestSpecific
-		}{
-			Asset:    asset,
-			Keyboard: keyboard,
-		}, http.StatusOK, nil
+		assetDetail.Keyboard = keyboard
 
 	case "mouse":
 
@@ -124,17 +112,13 @@ func GetAssetByID(assetID string) (interface{}, int, error) {
 			return nil, http.StatusInternalServerError, err
 		}
 
-		return struct {
-			Asset *models.Asset
-			Mouse *models.MouseRequestSpecific
-		}{
-			Asset: asset,
-			Mouse: mouse,
-		}, http.StatusOK, nil
+		assetDetail.Mouse = mouse
 
 	default:
 		return nil, http.StatusBadRequest, fmt.Errorf("invalid asset type")
 	}
+
+	return assetDetail, http.StatusOK, nil
 }
 
 func UpdateAsset(assetID string, body models.UpdateAssetRequest) (int, error) {

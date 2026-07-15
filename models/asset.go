@@ -56,6 +56,15 @@ type Asset struct {
 	CreatedAt     string `db:"created_at" json:"created_at"`
 }
 
+type AssetDetail struct {
+	Asset
+
+	Laptop   *LaptopRequestSpecific   `json:"laptop,omitempty"`
+	Mobile   *MobileRequestSpecific   `json:"mobile,omitempty"`
+	Keyboard *KeyboardRequestSpecific `json:"keyboard,omitempty"`
+	Mouse    *MouseRequestSpecific    `json:"mouse,omitempty"`
+}
+
 type UpdateAssetRequest struct {
 	Brand         string `json:"brand"`
 	Model         string `json:"model"`
