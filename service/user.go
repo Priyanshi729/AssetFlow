@@ -68,6 +68,19 @@ func GetUser(userID string) (*models.User, error) {
 	return repository.GetUser(userID)
 }
 
+func GetUserAssets(userID string) ([]models.Asset, int, error) {
+	assets, err := repository.GetUserAssets(userID)
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+
+	return assets, http.StatusOK, nil
+}
+
+func LogoutUser() (int, error) {
+	return http.StatusOK, nil
+}
+
 func DeleteUser(userID string) (int, error) {
 
 	if err := repository.DeleteUser(userID); err != nil {
