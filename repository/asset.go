@@ -177,7 +177,7 @@ func UpdateAsset(db sqlx.Ext, assetID string, req models.UpdateAssetRequest) err
 	return err
 }
 
-func UpdateLaptop(db sqlx.Ext, assetID string, req *models.LaptopRequestSpecific) error {
+func UpdateLaptop(db sqlx.Ext, assetID string, req *models.UpdateLaptopRequest) error {
 
 	query := `
 	UPDATE laptops

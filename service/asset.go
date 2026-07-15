@@ -117,6 +117,44 @@ func GetAssetByID(assetID string) (*models.AssetDetail, int, error) {
 	return assetDetail, http.StatusOK, nil
 }
 
+func UpdateAsset(assetID string, req models.UpdateAssetRequest) (int, error) {
+
+	asset, err := repository.GetAssetByID(assetID)
+	if err != nil {
+		return http.StatusNotFound, err
+	}
+
+	err = database.Tx(func(tx *sqlx.Tx) error {
+		if err := repository.UpdateAsset(tx, assetID, req); err != nil {
+			return err
+		}
+
+		switch asset.AssetType {
+
+		case "laptop":
+			return repository.UpdateLaptop(tx, assetID, &req.Laptop)
+
+		case "mobile":
+			return repository.UpdateMobile(tx, assetID, &req.Mobile)
+
+		case "keyboard":
+			return repository.UpdateKeyboard(tx, assetID, &req.Keyboard)
+
+		case "mouse":
+			return repository.UpdateMouse(tx, assetID, &req.Mouse)
+
+		default:
+			return fmt.Errorf("invalid asset type")
+		}
+	})
+
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	return http.StatusOK, nil
+}
+
 func DeleteAsset(assetID string) (int, error) {
 	err := repository.DeleteAsset(assetID)
 	if err != nil {
