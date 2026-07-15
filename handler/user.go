@@ -9,7 +9,6 @@ import (
 )
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
-
 	var user models.RegisterUser
 
 	if err := utils.ParseBody(r, &user); err != nil {

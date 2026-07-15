@@ -94,38 +94,29 @@ func GetAssetByID(assetID string) (*models.AssetDetails, error) {
 
 	query := `
 	SELECT
-		a.asset_id,a.brand,a.model,a.serial_number,a.asset_type,a.status,a.owner_type,a.warranty_start,a.warranty_end,a.created_at,
-
-		l.processor,
+		a.asset_id,a.brand,a.model,a.serial_number,a.asset_type,a.status,a.owner_type,a.warranty_start,a.warranty_end,a.created_at,l.processor,
 		COALESCE(l.ram, mb.ram) AS ram,
 		COALESCE(l.storage, mb.storage) AS storage,
 		COALESCE(l.operating_system, mb.operating_system) AS operating_system,
 		COALESCE(l.charger, mb.charger) AS charger,
 		COALESCE(l.device_password, mb.device_password) AS device_password,
-
 		k.layout,
 		COALESCE(k.connectivity, ms.connectivity) AS connectivity,
-
-		ms.dpi
+        ms.dpi
 
 	FROM assets a
-
-	LEFT JOIN laptops l
+    LEFT JOIN laptops l
 		ON a.asset_id = l.asset_id
 
 	LEFT JOIN mobiles mb
 		ON a.asset_id = mb.asset_id
-
-	LEFT JOIN keyboards k
+    LEFT JOIN keyboards k
 		ON a.asset_id = k.asset_id
-
-	LEFT JOIN mouses ms
+    LEFT JOIN mouses ms
 		ON a.asset_id = ms.asset_id
-
-	WHERE a.asset_id = $1
+    WHERE a.asset_id = $1
 	  AND a.archived_at IS NULL;
 	`
-
 	var asset models.AssetDetails
 
 	if err := database.DB.Get(&asset, query, assetID); err != nil {

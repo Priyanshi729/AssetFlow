@@ -28,13 +28,13 @@ func main() {
 		os.Getenv("DB_NAME"),
 		os.Getenv("DB_SSLMODE"),
 	); err != nil {
-		log.Fatal(err)
+		log.Panicf("Failed to initialze and migrate database: %v", err)
 	}
-	log.Println("Database connected")
+	log.Println("migration successfull!!")
 
 	go func() {
 		if err := srv.Run(":8080"); err != nil && err != http.ErrServerClosed {
-			log.Fatal(err)
+			log.Panicf("Failed to start server: %v", err)
 		}
 	}()
 
@@ -44,7 +44,8 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Println("Database closed")
+
 	if err := srv.Shutdown(shutdownTimeout); err != nil {
-		log.Fatal(err)
+		log.Panicf("Failed to shutdown server: %v", err)
 	}
 }
