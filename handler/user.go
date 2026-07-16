@@ -89,6 +89,20 @@ func GetUserAssets(w http.ResponseWriter, r *http.Request) {
 	utils.RespondJSON(w, http.StatusOK, assets)
 }
 
+func GetUserAssetByID(w http.ResponseWriter, r *http.Request) {
+
+	userID := r.PathValue("userID")
+	assetID := r.PathValue("assetID")
+
+	asset, statusCode, err := service.GetUserAssetByID(userID, assetID)
+	if err != nil {
+		utils.RespondError(w, statusCode, err, "failed to get asset")
+		return
+	}
+
+	utils.RespondJSON(w, http.StatusOK, asset)
+}
+
 func LogoutUser(w http.ResponseWriter, r *http.Request) {
 
 	statusCode, err := service.LogoutUser()
