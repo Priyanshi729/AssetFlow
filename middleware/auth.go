@@ -64,25 +64,24 @@ func UserContext(r *http.Request) *models.User {
 	return nil
 }
 
-func RequireRoles(roles ...string) func(http.Handler) http.Handler {
+func RequireRoles(next http.Handler, roles ...string) http.Handler {
 
-	return func(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		user := UserContext(r)
 
-			user := UserContext(r)
-			if user == nil {
-				utils.RespondError(w, http.StatusUnauthorized, nil, "unauthorized")
+		if user == nil {
+			utils.RespondError(w, http.StatusUnauthorized, nil, "Unauthorized")
+			return
+		}
+
+		for _, role := range roles {
+			if user.Role == role {
+				next.ServeHTTP(w, r)
 				return
 			}
+		}
 
-			for _, role := range roles {
-				if user.Role == role {
-					next.ServeHTTP(w, r)
-					return
-				}
-			}
-			utils.RespondError(w, http.StatusForbidden, nil, "access denied")
-		})
-	}
+		utils.RespondError(w, http.StatusForbidden, nil, "Access Denied")
+	})
 }

@@ -15,7 +15,7 @@ type Server struct {
 
 func protectedWithRoles(h http.HandlerFunc, roles ...string) http.Handler {
 	return middleware.Authenticate(
-		middleware.RequireRoles(roles...)(h),
+		middleware.RequireRoles(h, roles...),
 	)
 }
 
