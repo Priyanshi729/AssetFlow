@@ -54,10 +54,6 @@ type Asset struct {
 	WarrantyStart string `db:"warranty_start" json:"warranty_start"`
 	WarrantyEnd   string `db:"warranty_end" json:"warranty_end"`
 	CreatedAt     string `db:"created_at" json:"created_at"`
-}
-
-type AssetDetail struct {
-	Asset
 
 	Laptop   *LaptopRequestSpecific   `json:"laptop,omitempty"`
 	Mobile   *MobileRequestSpecific   `json:"mobile,omitempty"`

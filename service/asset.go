@@ -66,14 +66,10 @@ func GetAssets() ([]models.Asset, int, error) {
 	return assets, http.StatusOK, nil
 }
 
-func GetAssetByID(assetID string) (*models.AssetDetail, int, error) {
+func GetAssetByID(assetID string) (*models.Asset, int, error) {
 	asset, err := repository.GetAssetByID(assetID)
 	if err != nil {
 		return nil, http.StatusNotFound, err
-	}
-
-	assetDetail := &models.AssetDetail{
-		Asset: *asset,
 	}
 
 	switch asset.AssetType {
@@ -84,7 +80,7 @@ func GetAssetByID(assetID string) (*models.AssetDetail, int, error) {
 			return nil, http.StatusInternalServerError, err
 		}
 
-		assetDetail.Laptop = laptop
+		asset.Laptop = laptop
 
 	case "mobile":
 		mobile, err := repository.GetMobileByID(assetID)
@@ -92,7 +88,7 @@ func GetAssetByID(assetID string) (*models.AssetDetail, int, error) {
 			return nil, http.StatusInternalServerError, err
 		}
 
-		assetDetail.Mobile = mobile
+		asset.Mobile = mobile
 
 	case "keyboard":
 		keyboard, err := repository.GetKeyboardByID(assetID)
@@ -100,7 +96,7 @@ func GetAssetByID(assetID string) (*models.AssetDetail, int, error) {
 			return nil, http.StatusInternalServerError, err
 		}
 
-		assetDetail.Keyboard = keyboard
+		asset.Keyboard = keyboard
 
 	case "mouse":
 		mouse, err := repository.GetMouseByID(assetID)
@@ -108,13 +104,13 @@ func GetAssetByID(assetID string) (*models.AssetDetail, int, error) {
 			return nil, http.StatusInternalServerError, err
 		}
 
-		assetDetail.Mouse = mouse
+		asset.Mouse = mouse
 
 	default:
 		return nil, http.StatusBadRequest, fmt.Errorf("invalid asset type")
 	}
 
-	return assetDetail, http.StatusOK, nil
+	return asset, http.StatusOK, nil
 }
 
 func UpdateAsset(assetID string, req models.UpdateAssetRequest) (int, error) {
