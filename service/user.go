@@ -4,6 +4,7 @@ import (
 	"AssetFlow/models"
 	"AssetFlow/repository"
 	"AssetFlow/utils"
+	"fmt"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -75,6 +76,49 @@ func GetUserAssets(userID string) ([]models.Asset, int, error) {
 	}
 
 	return assets, http.StatusOK, nil
+}
+
+func GetUserAssetByID(userID, assetID string) (*models.Asset, int, error) {
+
+	asset, err := repository.GetUserAssetByID(userID, assetID)
+	if err != nil {
+		return nil, http.StatusNotFound, err
+	}
+
+	switch asset.AssetType {
+	case "laptop":
+		laptop, err := repository.GetLaptopByID(assetID)
+		if err != nil {
+			return nil, http.StatusInternalServerError, err
+		}
+		asset.Laptop = laptop
+
+	case "mobile":
+		mobile, err := repository.GetMobileByID(assetID)
+		if err != nil {
+			return nil, http.StatusInternalServerError, err
+		}
+		asset.Mobile = mobile
+
+	case "keyboard":
+		keyboard, err := repository.GetKeyboardByID(assetID)
+		if err != nil {
+			return nil, http.StatusInternalServerError, err
+		}
+		asset.Keyboard = keyboard
+
+	case "mouse":
+		mouse, err := repository.GetMouseByID(assetID)
+		if err != nil {
+			return nil, http.StatusInternalServerError, err
+		}
+		asset.Mouse = mouse
+
+	default:
+		return nil, http.StatusBadRequest, fmt.Errorf("invalid asset type")
+	}
+
+	return asset, http.StatusOK, nil
 }
 
 func LogoutUser() (int, error) {
