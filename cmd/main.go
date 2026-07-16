@@ -9,6 +9,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 const shutdownTimeout = 5 * time.Second
@@ -28,12 +30,12 @@ func main() {
 		os.Getenv("DB_NAME"),
 		os.Getenv("DB_SSLMODE"),
 	); err != nil {
-		log.Panicf("Failed to initialze and migrate database: %v", err)
+		log.Panicf("Failed to initialize and migrate database: %v", err)
 	}
-	log.Println("migration successfull!!")
+	log.Println("migration successful!!")
 
 	go func() {
-		if err := srv.Run(":8080"); err != nil && err != http.ErrServerClosed {
+		if err := srv.Run(":8080"); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Panicf("Failed to start server: %v", err)
 		}
 	}()

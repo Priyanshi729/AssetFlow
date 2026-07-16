@@ -35,6 +35,7 @@ func setupPublicRoutes(mux *http.ServeMux) {
 func setupPrivateRoutes(mux *http.ServeMux) {
 	mux.Handle("GET /v1/user/me", protectedWithRoles(handler.GetUser, "admin", "project-manager", "employee"))
 	mux.Handle("GET /v1/user/userasset/{userID}", protectedWithRoles(handler.GetUserAssets, "admin", "project-manager", "employee"))
+	mux.Handle("GET /v1/users/{userID}/assets/{assetID}", protectedWithRoles(handler.GetUserAssetByID, "admin", "project-manager", "employee"))
 	mux.Handle("POST /v1/user/logout", protectedWithRoles(handler.LogoutUser, "admin", "project-manager", "employee"))
 	mux.Handle("DELETE /v1/user/{userID}", protectedWithRoles(handler.DeleteUser, "admin", "project-manager", "employee"))
 

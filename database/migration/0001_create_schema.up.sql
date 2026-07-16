@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS assets (
 
                         warranty_start  TIMESTAMPTZ   NOT NULL,
                         warranty_end    TIMESTAMPTZ   NOT NULL,
-                        CHECK (warranty_end >= warranty_start),
+
 
 
                         created_at      TIMESTAMPTZ   DEFAULT CURRENT_TIMESTAMP,
