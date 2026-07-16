@@ -112,9 +112,7 @@ func GetAssetByID(assetID string) (*models.Asset, int, error) {
 
 	return asset, http.StatusOK, nil
 }
-
 func UpdateAsset(assetID string, req models.UpdateAssetRequest) (int, error) {
-
 	asset, err := repository.GetAssetByID(assetID)
 	if err != nil {
 		return http.StatusNotFound, err
@@ -124,24 +122,33 @@ func UpdateAsset(assetID string, req models.UpdateAssetRequest) (int, error) {
 		if err := repository.UpdateAsset(tx, assetID, req); err != nil {
 			return err
 		}
-
 		switch asset.AssetType {
 
 		case "laptop":
-			return repository.UpdateLaptop(tx, assetID, &req.Laptop)
+			if req.Laptop != nil {
+				return repository.UpdateLaptop(tx, assetID, req.Laptop)
+			}
 
 		case "mobile":
-			return repository.UpdateMobile(tx, assetID, &req.Mobile)
+			if req.Mobile != nil {
+				return repository.UpdateMobile(tx, assetID, req.Mobile)
+			}
 
 		case "keyboard":
-			return repository.UpdateKeyboard(tx, assetID, &req.Keyboard)
+			if req.Keyboard != nil {
+				return repository.UpdateKeyboard(tx, assetID, req.Keyboard)
+			}
 
 		case "mouse":
-			return repository.UpdateMouse(tx, assetID, &req.Mouse)
+			if req.Mouse != nil {
+				return repository.UpdateMouse(tx, assetID, req.Mouse)
+			}
 
 		default:
 			return fmt.Errorf("invalid asset type")
 		}
+
+		return nil
 	})
 
 	if err != nil {

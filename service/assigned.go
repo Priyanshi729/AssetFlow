@@ -29,6 +29,26 @@ func AssignAsset(assetID string, body models.AssignAssetRequest) (int, error) {
 	return http.StatusOK, nil
 }
 
+func GetAllAssetAssignmentHistory() ([]models.AssetAssignmentHistory, int, error) {
+
+	history, err := repository.GetAllAssetAssignmentHistory()
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+
+	return history, http.StatusOK, nil
+}
+
+func GetAllAssignedAsset() ([]models.AssetAssignmentHistory, int, error) {
+
+	history, err := repository.GetAllAssignedAsset()
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+
+	return history, http.StatusOK, nil
+}
+
 func ReturnAsset(assetID string) (int, error) {
 	err := repository.ReturnAsset(assetID)
 	if err != nil {

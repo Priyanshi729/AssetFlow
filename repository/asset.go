@@ -76,7 +76,7 @@ func GetAssets() ([]models.Asset, error) {
 
 	query := `
 		SELECT
-			asset_id,brand,model,serial_number,asset_type,status,owner_type,warranty_start,warranty_end,created_at
+			asset_id,brand,model,serial_number,asset_type,status,owner_type,warranty_start,warranty_end
 		FROM assets
 		WHERE archived_at IS NULL
 		ORDER BY created_at DESC
@@ -93,7 +93,7 @@ func GetAssets() ([]models.Asset, error) {
 func GetAssetByID(assetID string) (*models.Asset, error) {
 
 	query := `SELECT
-		asset_id,brand,model,serial_number,asset_type,status,owner_type,warranty_start,warranty_end,created_at
+		asset_id,brand,model,serial_number,asset_type,status,owner_type,warranty_start,warranty_end
 	FROM assets
 	WHERE asset_id = $1
 	  AND archived_at IS NULL
@@ -168,7 +168,9 @@ func UpdateAsset(db sqlx.Ext, assetID string, req models.UpdateAssetRequest) err
 	query := `
 	UPDATE assets
 	SET
-		brand = $2,model = $3,serial_number = $4,status = $5,owner_type = $6,warranty_start = $7,warranty_end = $8,updated_at = CURRENT_TIMESTAMP
+		brand = COALESCE($2,brand),model = COALESCE($3,model),serial_number = COALESCE($4,serial_number),status = COALESCE($5,status),
+		owner_type = COALESCE($6,owner_type),warranty_start = COALESCE($7,warranty_start),warranty_end = COALESCE($8,warranty_end),updated_at = CURRENT_TIMESTAMP
+
 	WHERE asset_id = $1
 	  AND archived_at IS NULL
 	`
@@ -179,13 +181,12 @@ func UpdateAsset(db sqlx.Ext, assetID string, req models.UpdateAssetRequest) err
 
 func UpdateLaptop(db sqlx.Ext, assetID string, req *models.UpdateLaptopRequest) error {
 
-	query := `
-	UPDATE laptops
-	SET
-		processor = $2,ram = $3,storage = $4,operating_system = $5,charger = $6,device_password = $7
-	WHERE asset_id = $1
+	query := `UPDATE laptops
+              SET
+	            processor = COALESCE($2, processor),ram = COALESCE($3, ram),storage = COALESCE($4, storage),
+	            operating_system = COALESCE($5, operating_system),charger = COALESCE($6, charger),device_password = COALESCE($7, device_password)
+              WHERE asset_id = $1
 	`
-
 	_, err := db.Exec(query, assetID, req.Processor, req.RAM, req.Storage, req.OperatingSystem, req.Charger, req.DevicePassword)
 
 	return err
@@ -193,38 +194,33 @@ func UpdateLaptop(db sqlx.Ext, assetID string, req *models.UpdateLaptopRequest) 
 
 func UpdateMobile(db sqlx.Ext, assetID string, req *models.UpdateMobileRequest) error {
 
-	query := `
-	UPDATE mobiles
-	SET
-		ram = $2,storage = $3,operating_system = $4,charger = $5,device_password = $6
-	WHERE asset_id = $1
-	`
-
+	query := `UPDATE mobiles
+              SET
+	             ram = COALESCE($2, ram),storage = COALESCE($3, storage),operating_system = COALESCE($4, operating_system),charger = COALESCE($5, charger),device_password = COALESCE($6, device_password)
+              WHERE asset_id = $1
+`
 	_, err := db.Exec(query, assetID, req.RAM, req.Storage, req.OperatingSystem, req.Charger, req.DevicePassword)
 	return err
 }
 
 func UpdateKeyboard(db sqlx.Ext, assetID string, req *models.UpdateKeyboardRequest) error {
 
-	query := `
-	UPDATE keyboards
-	SET
-		layout = $2,connectivity = $3
-	WHERE asset_id = $1
-	`
-
+	query := `UPDATE keyboards
+              SET
+	            layout = COALESCE($2, layout),connectivity = COALESCE($3, connectivity)
+              WHERE asset_id = $1
+`
 	_, err := db.Exec(query, assetID, req.Layout, req.Connectivity)
 	return err
 }
 
 func UpdateMouse(db sqlx.Ext, assetID string, req *models.UpdateMouseRequest) error {
 
-	query := `
-	UPDATE mouses
-	SET
-		dpi = $2,connectivity = $3
-	WHERE asset_id = $1
-	`
+	query := `UPDATE mouses
+            SET
+	            dpi = COALESCE($2, dpi),connectivity = COALESCE($3, connectivity)
+            WHERE asset_id = $1
+`
 
 	_, err := db.Exec(query, assetID, req.DPI, req.Connectivity)
 	return err

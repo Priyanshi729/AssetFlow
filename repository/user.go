@@ -84,7 +84,7 @@ func GetUserAssets(userID string) ([]models.Asset, error) {
 
 	query := `
 	SELECT
-		a.asset_id,a.brand,a.model,a.serial_number,a.asset_type,a.status,a.owner_type,a.warranty_start,a.warranty_end,a.created_at
+		a.asset_id,a.brand,a.model,a.serial_number,a.asset_type,a.status,a.owner_type,a.warranty_start,a.warranty_end
 	FROM assets a
 	INNER JOIN asset_assignments aa
 	ON a.asset_id = aa.asset_id
@@ -105,7 +105,7 @@ func GetUserAssetByID(userID, assetID string) (*models.Asset, error) {
 
 	query := `
 	SELECT
-	    a.asset_id,a.brand,a.model,a.serial_number,a.asset_type,a.status,a.owner_type,a.warranty_start,a.warranty_end,a.created_at
+	    a.asset_id,a.brand,a.model,a.serial_number,a.asset_type,a.status,a.owner_type,a.warranty_start,a.warranty_end
 	FROM assets a
 	INNER JOIN asset_assignments aa
 		ON a.asset_id = aa.asset_id
@@ -123,18 +123,4 @@ func GetUserAssetByID(userID, assetID string) (*models.Asset, error) {
 	}
 
 	return &asset, nil
-}
-
-func DeleteUser(userID string) error {
-
-	query := `
-		UPDATE users
-		SET
-			archived_at = NOW()
-		WHERE user_id = $1
-		  AND archived_at IS NULL
-	`
-
-	_, err := database.DB.Exec(query, userID)
-	return err
 }

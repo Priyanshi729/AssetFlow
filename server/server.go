@@ -36,8 +36,6 @@ func setupPrivateRoutes(mux *http.ServeMux) {
 	mux.Handle("GET /v1/user/me", protectedWithRoles(handler.GetUser, "admin", "project-manager", "employee"))
 	mux.Handle("GET /v1/user/userasset/{userID}", protectedWithRoles(handler.GetUserAssets, "admin", "project-manager", "employee"))
 	mux.Handle("GET /v1/users/{userID}/assets/{assetID}", protectedWithRoles(handler.GetUserAssetByID, "admin", "project-manager", "employee"))
-	mux.Handle("POST /v1/user/logout", protectedWithRoles(handler.LogoutUser, "admin", "project-manager", "employee"))
-	mux.Handle("DELETE /v1/user/{userID}", protectedWithRoles(handler.DeleteUser, "admin", "project-manager", "employee"))
 
 	mux.Handle("POST /v1/assets", protectedWithRoles(handler.CreateAsset, "admin", "project-manager"))
 	mux.Handle("GET /v1/assets", protectedWithRoles(handler.GetAssets, "admin", "project-manager"))
@@ -45,7 +43,10 @@ func setupPrivateRoutes(mux *http.ServeMux) {
 	mux.Handle("GET /v1/assets/{assetID}", protectedWithRoles(handler.GetAssetByID, "admin", "project-manager"))
 	mux.Handle("PUT /v1/assets/{assetID}", protectedWithRoles(handler.UpdateAsset, "admin", "project-manager"))
 	mux.Handle("DELETE /v1/assets/{assetID}", protectedWithRoles(handler.DeleteAsset, "admin", "project-manager"))
+
 	mux.Handle("POST /v1/assets/assign/{assetID}", protectedWithRoles(handler.AssignAsset, "admin", "project-manager"))
+	mux.Handle("GET /v1/assets/history", protectedWithRoles(handler.GetAllAssetAssignmentHistory, "admin", "project-manager"))
+	mux.Handle("GET /v1/assets/allassigned", protectedWithRoles(handler.GetAllAssignedAssets, "admin", "project-manager"))
 	mux.Handle("PUT /v1/assets/return/{assetID}", protectedWithRoles(handler.ReturnAsset, "admin", "project-manager"))
 
 	mux.Handle("PUT /v1/assets/repair/{assetID}", protectedWithRoles(handler.SendForRepair, "admin", "project-manager"))

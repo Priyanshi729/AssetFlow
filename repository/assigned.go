@@ -2,6 +2,7 @@ package repository
 
 import (
 	"AssetFlow/database"
+	"AssetFlow/models"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -20,6 +21,70 @@ func CreateAssetAssignment(db sqlx.Ext, assetID string, userID string) error {
 
 	return err
 }
+func GetAllAssetAssignmentHistory() ([]models.AssetAssignmentHistory, error) {
+
+	var history []models.AssetAssignmentHistory
+
+	query := `
+	SELECT
+		aa.assignment_id,
+		a.asset_id,
+		a.brand,
+		a.model,
+		a.asset_type,
+		u.user_id,
+		u.name,
+		a.status,
+		aa.assigned_on,
+		aa.returned_at
+	FROM asset_assignments aa
+	JOIN users u
+		ON aa.assigned_to = u.user_id
+	JOIN assets a
+		ON aa.asset_id = a.asset_id
+	WHERE aa.archived_at IS NULL
+	ORDER BY aa.assigned_on DESC;
+	`
+
+	if err := database.DB.Select(&history, query); err != nil {
+		return nil, err
+	}
+
+	return history, nil
+}
+
+func GetAllAssignedAsset() ([]models.AssetAssignmentHistory, error) {
+
+	var history []models.AssetAssignmentHistory
+
+	query := `
+	SELECT
+		aa.assignment_id,
+		a.asset_id,
+		a.brand,
+		a.model,
+		a.asset_type,
+		u.user_id,
+		u.name,
+		a.status,
+		aa.assigned_on,
+		aa.returned_at
+	FROM asset_assignments aa
+	JOIN users u
+		ON aa.assigned_to = u.user_id
+	JOIN assets a
+		ON aa.asset_id = a.asset_id
+	WHERE aa.archived_at IS NULL
+	      AND aa.returned_at IS NULL
+	ORDER BY aa.assigned_on DESC;
+	`
+
+	if err := database.DB.Select(&history, query); err != nil {
+		return nil, err
+	}
+
+	return history, nil
+}
 
 func UpdateAssetStatus(assetID, status string) error {
 	query := `
@@ -31,7 +96,7 @@ func UpdateAssetStatus(assetID, status string) error {
 		  AND archived_at IS NULL
 	`
 	_, err := database.DB.Exec(query, assetID, status)
-	
+
 	return err
 }
 

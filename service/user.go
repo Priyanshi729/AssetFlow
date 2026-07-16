@@ -120,16 +120,3 @@ func GetUserAssetByID(userID, assetID string) (*models.Asset, int, error) {
 
 	return asset, http.StatusOK, nil
 }
-
-func LogoutUser() (int, error) {
-	return http.StatusOK, nil
-}
-
-func DeleteUser(userID string) (int, error) {
-
-	if err := repository.DeleteUser(userID); err != nil {
-		return http.StatusInternalServerError, err
-	}
-
-	return http.StatusOK, nil
-}

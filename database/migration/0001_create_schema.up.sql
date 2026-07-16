@@ -76,10 +76,6 @@ CREATE TABLE IF NOT EXISTS assets (
 
 );
 
-CREATE UNIQUE INDEX idx_unique_serial_number
-    ON assets(serial_number)
-    WHERE archived_at IS NULL;
-
 
 
 CREATE TABLE laptops (

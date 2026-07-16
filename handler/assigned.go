@@ -31,6 +31,28 @@ func AssignAsset(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func GetAllAssetAssignmentHistory(w http.ResponseWriter, r *http.Request) {
+
+	history, statusCode, err := service.GetAllAssetAssignmentHistory()
+	if err != nil {
+		utils.RespondError(w, statusCode, err, "failed to get asset assignment history")
+		return
+	}
+
+	utils.RespondJSON(w, http.StatusOK, history)
+}
+
+func GetAllAssignedAssets(w http.ResponseWriter, r *http.Request) {
+
+	history, statusCode, err := service.GetAllAssignedAsset()
+	if err != nil {
+		utils.RespondError(w, statusCode, err, "failed to get all asset assignment")
+		return
+	}
+
+	utils.RespondJSON(w, http.StatusOK, history)
+}
+
 func ReturnAsset(w http.ResponseWriter, r *http.Request) {
 	assetID := r.PathValue("assetID")
 
