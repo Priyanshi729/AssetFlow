@@ -15,11 +15,11 @@ import (
 
 var DB *sqlx.DB
 
-func ConnectDB(host, port, user, password, databaseName, sslmode string) error {
+func ConnectDB(host, port, user, password, databaseName string) error {
 	var err error
 
 	dsn := fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", host, port, user, password, databaseName, sslmode)
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, databaseName)
 
 	DB, err = sqlx.Connect("postgres", dsn)
 

@@ -28,7 +28,6 @@ func main() {
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASS"),
 		os.Getenv("DB_NAME"),
-		os.Getenv("DB_SSLMODE"),
 	); err != nil {
 		log.Panicf("Failed to initialize and migrate database: %v", err)
 	}

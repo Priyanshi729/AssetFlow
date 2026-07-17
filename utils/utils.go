@@ -42,7 +42,7 @@ func newClientError(err error, statusCode int, messageToUser string) *models.Cli
 	}
 }
 
-func RespondError(w http.ResponseWriter, statusCode int, err error, messageToUser string, additionalInfoForDevs ...string) {
+func RespondError(w http.ResponseWriter, statusCode int, err error, messageToUser string) {
 	log.Printf("status: %d, message: %s, err: %+v ", statusCode, messageToUser, err)
 	clientError := newClientError(err, statusCode, messageToUser)
 	w.WriteHeader(statusCode)

@@ -46,15 +46,15 @@ type KeyboardRequestSpecific struct {
 }
 
 type Asset struct {
-	AssetID       string     `db:"asset_id" json:"asset_id"`
-	Brand         string     `db:"brand" json:"brand"`
-	Model         string     `db:"model" json:"model"`
-	SerialNumber  string     `db:"serial_number" json:"serial_number"`
-	AssetType     string     `db:"asset_type" json:"asset_type"`
-	Status        string     `db:"status" json:"status"`
-	OwnerType     string     `db:"owner_type" json:"owner_type"`
-	WarrantyStart *time.Time `db:"warranty_start" json:"warranty_start"`
-	WarrantyEnd   *time.Time `db:"warranty_end" json:"warranty_end"`
+	AssetID       string    `db:"asset_id" json:"asset_id"`
+	Brand         string    `db:"brand" json:"brand"`
+	Model         string    `db:"model" json:"model"`
+	SerialNumber  string    `db:"serial_number" json:"serial_number"`
+	AssetType     string    `db:"asset_type" json:"asset_type"`
+	Status        string    `db:"status" json:"status"`
+	OwnerType     string    `db:"owner_type" json:"owner_type"`
+	WarrantyStart time.Time `db:"warranty_start" json:"warranty_start"`
+	WarrantyEnd   time.Time `db:"warranty_end" json:"warranty_end"`
 
 	Laptop   *LaptopRequestSpecific   `json:"laptop,omitempty"`
 	Mobile   *MobileRequestSpecific   `json:"mobile,omitempty"`
