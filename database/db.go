@@ -58,23 +58,23 @@ func CloseDB() error {
 	return nil
 }
 
-func Tx(fn func(tx *sqlx.Tx) error) error {
-
+func Tx(fn func(tx *sqlx.Tx) error) (err error) {
 	tx, err := DB.Beginx()
 	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %w", err)
+		return fmt.Errorf("failed to start transaction: %w", err)
 	}
-
-	if err := fn(tx); err != nil {
-		if rollbackErr := tx.Rollback(); rollbackErr != nil {
-			log.Printf("failed to rollback transaction: %v", rollbackErr)
+	defer func() {
+		if err != nil {
+			if rollbackErr := tx.Rollback(); rollbackErr != nil {
+				log.Printf("failed to rollback transaction: %v", rollbackErr)
+			}
+			return
 		}
-		return err
-	}
 
-	if err := tx.Commit(); err != nil {
-		return fmt.Errorf("failed to commit transaction: %w", err)
-	}
-
-	return nil
+		if commitErr := tx.Commit(); commitErr != nil {
+			err = fmt.Errorf("failed to commit transaction: %w", commitErr)
+		}
+	}()
+	err = fn(tx)
+	return
 }
